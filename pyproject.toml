@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autopartgen"
+version = "0.1.0"
+description = "Autoregressive 3D part generation and discovery."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+authors = [
+  {name = "AutoPartGen contributors"}
+]
+dependencies = [
+  # PyTorch is installed as an explicit prerequisite so users can select the
+  # CUDA build that matches their system and any compiled extensions.
+  "numpy<2",
+  "pillow",
+  "tqdm",
+  "huggingface_hub>=0.34,<1.0",
+  "diffusers==0.32.2",
+  "einops",
+  "trimesh[easy]>=3.15.0",
+  "fpsample",
+  "fast-simplification",
+  "transformers>=4.39,<5",  # <5 keeps huggingface_hub<1.0; RMBG-1.4 validated on 4.57
+  "scikit-image",
+  "scipy",
+  "omegaconf",
+  "fvcore",
+  "iopath",
+  "sympy==1.13.1",
+]
+
+[project.optional-dependencies]
+postprocess = ["open3d", "igraph"]
+# Install diso separately after torch is importable:
+#   pip install diso --no-build-isolation
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["autopartgen*"]
+
+[tool.setuptools.package-data]
+"autopartgen.configs" = ["*.yaml"]

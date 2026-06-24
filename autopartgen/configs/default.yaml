@@ -1,0 +1,67 @@
+# AutoPartGen release inference config.
+
+float_precision: bfloat16
+
+scheduler:
+  class_name: DPMSolverMultistepScheduler
+  num_inference_timesteps: 50
+  num_train_timesteps: 1000
+  shift: 0.0
+  beta_start: 0.00085
+  beta_end: 0.012
+  beta_schedule: scaled_linear
+  variance_type: fixed_small
+  prediction_type: v_prediction
+  rescale_betas_zero_snr: true
+  timestep_spacing: trailing
+  clip_sample: false
+  algorithm_type: sde-dpmsolver++
+
+guidance:
+  whole_cfg_scale: 5.0
+  image:
+    image_cfg_scale: 0.0
+    geometry_cfg_scale: 5.0
+  mesh:
+    image_cfg_scale: 0.0
+    geometry_cfg_scale: 3.0
+  image_mesh:
+    image_cfg_scale: 0.0
+    geometry_cfg_scale: 5.0
+  image_mask:
+    image_cfg_scale: 7.0
+    geometry_cfg_scale: 4.0
+  image_mesh_mask:
+    image_cfg_scale: 7.0
+    geometry_cfg_scale: 4.0
+
+conditioner:
+  model_name: dinov2_vitl14_reg
+  img_size: 448
+  norm_out: none
+
+dit:
+  num_latents: 2048
+  in_channels: 64
+  width: 2048
+  num_layers: 21
+  num_attention_heads: 16
+  cross_attention_dim: 1024
+  latent_dim: 64
+  use_part_position_embedding: true
+  token_cross_attention_layer: 10
+  latent_on_spatial: false
+  mlp_encode_cond: true
+  part_as_concat: false
+  scale_factor: 1.268390
+  use_diffusion_forcing: true
+  checkpoint_path: checkpoints/autopartgen_dit.pth
+
+vae:
+  encoder_width: 512
+  latent_random_downscales: [16, 64]
+  latent_eval_downscale: 16
+  surface_sampling_chunks: 1
+  grad_type: numerical
+  grad_interval: 0.001
+  checkpoint_path: checkpoints/autopartgen_vae.pth
