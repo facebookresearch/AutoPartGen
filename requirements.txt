@@ -1,0 +1,31 @@
+# Install torch and torchvision first so CUDA-specific wheels/toolkits are chosen
+# explicitly before optional CUDA extensions such as diso are built. See README.
+numpy<2
+pillow
+tqdm
+huggingface_hub>=0.34,<1.0
+
+diffusers==0.32.2
+einops
+trimesh[easy]>=3.15.0
+fpsample
+fast-simplification
+# transformers loads BriaRMBG (RMBG-1.4) for background removal (non-commercial
+# license). Pass --no_remove_background to skip it. Pinned <5 so it resolves a
+# transformers that uses huggingface_hub<1.0 (RMBG-1.4 validated on transformers 4.57).
+transformers>=4.39,<5
+scikit-image
+scipy
+omegaconf
+fvcore
+iopath
+sympy==1.13.1
+
+# Optional postprocessing backends:
+#   pip install open3d igraph
+# Iso-surface extraction defaults to 'auto': diso/DiffDMC when installed, else
+# scikit-image (installed above). diso is strongly recommended for clean parts
+# but compiles CUDA kernels, so it is installed separately and needs a CUDA
+# toolkit matching PyTorch; see README for install ordering.
+# Open3D enables faster voxel IoU and mesh simplification. Without it,
+# AutoPartGen uses a sampled-surface IoU fallback and keeps unsimplified meshes.
