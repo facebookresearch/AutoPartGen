@@ -41,12 +41,22 @@ them in `checkpoints/`:
 
 | Component | Expected path |
 | :--- | :--- |
-| Part-generation DiT | `checkpoints/autopartgen_dit.pth` |
+| Part-generation DiT, default 2048-latent release | `checkpoints/autopartgen_dit.pth` |
 | Shape VAE | `checkpoints/autopartgen_vae.pth` |
 
 ```bash
 hf download facebook/autopartgen \
   autopartgen_dit.pth autopartgen_vae.pth \
+  --local-dir checkpoints
+```
+
+We also provide an optional 4096-latent-token DiT checkpoint, finetuned from the
+2048-token model for another 50k steps, which may improve fine-detail and part
+modeling for some inputs at a higher memory and runtime cost:
+
+```bash
+hf download facebook/autopartgen \
+  autopartgen_dit_4096.pth autopartgen_vae.pth \
   --local-dir checkpoints
 ```
 
@@ -123,6 +133,15 @@ python inference.py \
   --output_path outputs/apple_character
 ```
 
+4096-latent-token image-conditioned generation:
+
+```bash
+python inference.py \
+  --config autopartgen/configs/default_4096.yaml \
+  --image examples/image/apple_character/image.png \
+  --output_path outputs/apple_character_4096
+```
+
 Mesh-conditioned generation:
 
 ```bash
@@ -187,16 +206,26 @@ masked_parts = generate_from_image_and_mask(
 )
 ```
 
+To load the optional 4096-latent-token checkpoint from Python, pass the packaged
+4096 config:
+
+```python
+pipeline = load_pipeline("autopartgen/configs/default_4096.yaml")
+```
+
 The package also provides `generate_from_image_and_mesh` for image-and-mesh
 conditioning without an indexed mask.
 
 ## Runtime and Post-processing
 
 Release inference loads `autopartgen/configs/default.yaml` by default through
-`load_pipeline()`. Runtime options can be passed through CLI flags in
-`inference.py` or through `GenerationOptions` in Python.
+`load_pipeline()`. This 2048-latent-token checkpoint is the main release path.
+The optional 4096-latent-token finetuned checkpoint uses
+`autopartgen/configs/default_4096.yaml`; pass it with `--config` in the CLI or
+as the `config` argument to `load_pipeline()`. Runtime options can be passed
+through CLI flags in `inference.py` or through `GenerationOptions` in Python.
 
-Guidance is mode-specific. The current release defaults are:
+Guidance is mode-specific. The current default 2048-latent release values are:
 
 | Mode | Image CFG | Geometry CFG |
 | --- | ---: | ---: |
@@ -209,7 +238,11 @@ Guidance is mode-specific. The current release defaults are:
 
 `--image_cfg_scale`, `--geometry_cfg_scale`, `--mask_image_cfg_scale`,
 `--mask_geometry_cfg_scale`, and `--whole_cfg_scale` only override the config for
-that run; `autopartgen/configs/default.yaml` is the default values.
+that run; `autopartgen/configs/default.yaml` provides the default 2048-latent
+values. The optional 4096-latent-token config uses the same scheduler and model
+width, sets `dit.num_latents: 4096`, points to
+`checkpoints/autopartgen_dit_4096.pth`, uses the VAE with
+`latent_eval_downscale: 8`.
 
 > [!NOTE]
 > - Higher geometry guidance usually encourages more segments and accepted
@@ -285,8 +318,9 @@ Each example directory contains only the input files for that scenario.
 ## License
 
 The code and the released checkpoints (`autopartgen_dit.pth`,
-`autopartgen_vae.pth`) are released under the **FAIR Noncommercial Research
-License** (see [LICENSE](LICENSE)) — noncommercial research use only.
+`autopartgen_dit_4096.pth`, and `autopartgen_vae.pth`) are released under the
+**FAIR Noncommercial Research License** (see [LICENSE](LICENSE)) —
+noncommercial research use only.
 
 ## Acknowledgements
 
