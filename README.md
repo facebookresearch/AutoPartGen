@@ -2,7 +2,9 @@
 <h1>AutoPartGen: Autoregressive 3D Part Generation and Discovery</h1>
 
 <p>
-<a href="https://arxiv.org/abs/2507.13346"><img src="https://img.shields.io/badge/arXiv-2507.13346-b31b1b" alt="arXiv"></a><a href="https://silent-chen.github.io/AutoPartGen/"><img src="https://img.shields.io/badge/Project_Page-green" alt="Project Page"></a>
+<a href="https://arxiv.org/abs/2507.13346"><img src="https://img.shields.io/badge/arXiv-2507.13346-b31b1b" alt="arXiv"></a>
+<a href="https://silent-chen.github.io/AutoPartGen/"><img src="https://img.shields.io/badge/Project_Page-green" alt="Project Page"></a>
+<a href="https://huggingface.co/facebook/autopartgen"><img src="https://img.shields.io/badge/Model-facebook%2Fautopartgen-yellow" alt="Model"></a>
 </p>
 
 <p>
